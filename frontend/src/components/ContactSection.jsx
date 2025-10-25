@@ -8,7 +8,7 @@ const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false);
 
   // 🌐 Your backend base URL
-  const API_URL = "http://localhost:5000/api/messages";
+  const API_URL = " https://my-portfolio-ux9c.onrender.com/api/messages";
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
