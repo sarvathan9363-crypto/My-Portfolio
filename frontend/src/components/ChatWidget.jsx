@@ -306,7 +306,6 @@ export default function ChatWidget() {
               letterSpacing: "0.05em",
             }}
           >
-            Powered by OpenRouter
           </div>
 
           {/* Bottom shimmer line */}
