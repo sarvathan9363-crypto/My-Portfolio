@@ -1,177 +1,205 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Code, Database, Palette, Server, Smartphone, Globe } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import SkillBar from "./SkillBar";
+import { skills } from "../utils/constants";
 
 const SkillsSection = () => {
-  const skillCategories = [
-    {
-      title: 'Frontend',
-      icon: <Code className="w-8 h-8" />,
-      skills: [
-        { name: 'HTML', level: 95 },
-        { name: 'CSS', level: 90 },
-        { name: 'JavaScript', level: 88 },
-        { name: 'React', level: 85 },
-        // { name: 'TypeScript', level: 80 },
-        // { name: 'Tailwind CSS', level: 85 },
-      ]
-    },
-    {
-      title: 'Backend',
-      icon: <Server className="w-8 h-8" />,
-      skills: [
-        { name: 'Node.js', level: 85 },
-        { name: 'Python', level: 80 },
-        { name: 'C', level: 75 },
-        { name: 'C++', level: 70 },
-        // { name: 'Express.js', level: 80 },
-        // { name: 'REST APIs', level: 85 },
-      ]
-    },
-    {
-      title: 'Database',
-      icon: <Database className="w-8 h-8" />,
-      skills: [
-        { name: 'MongoDB', level: 80 },
-        { name: 'PostgreSQL', level: 75 },
-        { name: 'MySQL', level: 75 },
-        // { name: 'Redis', level: 70 },
-        // { name: 'Firebase', level: 80 },
-        // { name: 'Supabase', level: 75 },
-      ]
-    },
-    // {
-    //   title: 'Design',
-    //   icon: <Palette className="w-8 h-8" />,
-    //   skills: [
-    //     { name: 'UI/UX Design', level: 85 },
-    //     { name: 'Figma', level: 80 },
-    //     { name: 'Adobe XD', level: 75 },
-    //     { name: 'Photoshop', level: 70 },
-    //     { name: 'Responsive Design', level: 90 },
-    //     { name: 'Design Systems', level: 80 },
-    //   ]
-    // },
-    // {
-    //   title: 'Mobile',
-    //   icon: <Smartphone className="w-8 h-8" />,
-    //   skills: [
-    //     { name: 'React Native', level: 75 },
-    //     { name: 'Flutter', level: 70 },
-    //     { name: 'iOS Development', level: 65 },
-    //     { name: 'Android Development', level: 65 },
-    //     { name: 'PWA', level: 80 },
-    //     { name: 'Hybrid Apps', level: 75 },
-    //   ]
-    // },
-    // {
-    //   title: 'Tools & Others',
-    //   icon: <Globe className="w-8 h-8" />,
-    //   skills: [
-    //     { name: 'Git', level: 90 },
-    //     { name: 'Docker', level: 75 },
-    //     { name: 'AWS', level: 70 },
-    //     { name: 'Vercel', level: 85 },
-    //     { name: 'Webpack', level: 75 },
-    //     { name: 'Vite', level: 85 },
-    //   ]
-    // },
+  const techTags = [
+    "React", "Node.js", "MongoDB", "Express",
+    "REST API", "GitHub", "Tailwind CSS", "JavaScript",
   ];
 
   return (
-    <section id="skills" className="py-20 bg-gradient-to-br from-dark-bg to-dark-card relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-neon-cyan/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-neon-pink/5 rounded-full blur-3xl"></div>
-      </div>
+    <section
+      id="skills"
+      className="relative py-28 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #080808 0%, #0e0505 50%, #080808 100%)" }}
+    >
+      {/* Ambient glows */}
+      <div
+        className="absolute top-1/4 right-0 w-[400px] h-[400px] pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(185,28,28,0.07) 0%, transparent 65%)" }}
+      />
+      <div
+        className="absolute bottom-1/4 left-0 w-[350px] h-[350px] pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)" }}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
+
+        {/* ── Section header ── */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
-          <h2 className="text-4xl md:text-5xl font-orbitron font-bold text-gradient mb-4">
-            Skills & Expertise
+          <div className="flex items-center justify-center gap-4 mb-3">
+            <div className="w-10 h-px" style={{ background: "linear-gradient(90deg, transparent, #b91c1c)" }} />
+            <span
+              className="text-xs tracking-[0.35em] uppercase font-semibold"
+              style={{ color: "#d4af37", fontFamily: "'Outfit', sans-serif" }}
+            >
+              Skills
+            </span>
+            <div className="w-10 h-px" style={{ background: "linear-gradient(90deg, #b91c1c, transparent)" }} />
+          </div>
+
+          {/* Static heading — WebkitBackgroundClip is safe here, no hover transition */}
+          <h2
+            className="text-5xl font-bold mb-4"
+            style={{
+              fontFamily: "'Sora', sans-serif",
+              background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 40%, #d4af37 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              lineHeight: 1.1,
+            }}
+          >
+            Skills &{" "}
+            <span
+              style={{
+                background: "linear-gradient(90deg, #b91c1c, #ef4444)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Technologies
+            </span>
           </h2>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Technologies and tools I use to bring ideas to life
+
+          <p
+            className="max-w-xl mx-auto text-sm"
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              color: "rgba(180,180,180,0.6)",
+              lineHeight: 1.7,
+            }}
+          >
+            Technologies I use to build scalable and modern web applications.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {skillCategories.map((category, categoryIndex) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: categoryIndex * 0.1 }}
-              viewport={{ once: true }}
-              className="glass-effect rounded-2xl p-6 hover:scale-105 transition-all duration-300"
-            >
-              <div className="flex items-center mb-6">
-                <div className="text-neon-cyan mr-3">
-                  {category.icon}
-                </div>
-                <h3 className="text-xl font-bold text-white">{category.title}</h3>
-              </div>
-
-              <div className="space-y-4">
-                {category.skills.map((skill, skillIndex) => (
-                  <div key={skill.name} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                      <span className="text-neon-cyan text-sm font-bold">{skill.level}%</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <motion.div
-                        className="bg-gradient-to-r from-neon-cyan to-neon-purple h-2 rounded-full"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        transition={{ duration: 1, delay: categoryIndex * 0.1 + skillIndex * 0.1 }}
-                        viewport={{ once: true }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Additional Skills Showcase */}
+        {/* ── Skills panel ── */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="mt-16 text-center"
+          className="relative rounded-2xl p-8 mb-10"
+          style={{
+            background: "rgba(255,255,255,0.02)",
+            border: "1px solid rgba(185,28,28,0.2)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03)",
+          }}
         >
-          <div className="glass-effect rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-4">Always Learning</h3>
-            <p className="text-gray-300 mb-6">
-              I'm constantly exploring new technologies and frameworks to stay ahead of the curve.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {['AI/ML', 'Blockchain', 'WebGL', 'Three.js', 'GraphQL', 'Microservices'].map((tech, index) => (
-                <motion.span
-                  key={tech}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="px-4 py-2 bg-gradient-to-r from-neon-cyan/20 to-neon-purple/20 rounded-full text-white text-sm border border-neon-cyan/30"
-                >
-                  {tech}
-                </motion.span>
-              ))}
-            </div>
+          {/* Top shimmer */}
+          <div
+            className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
+            style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 35%, #d4af37 50%, #b91c1c 65%, transparent 100%)" }}
+          />
+
+          {/* Panel header */}
+          <div className="flex items-center gap-3 mb-7">
+            <span
+              className="w-2 h-2 rounded-full flex-shrink-0"
+              style={{
+                background: "#dc2626",
+                boxShadow: "0 0 6px rgba(185,28,28,0.8)",
+                animation: "statusPulse 2s ease-in-out infinite",
+              }}
+            />
+            {/* Plain color label — no gradient clip */}
+            <span
+              className="text-xs font-semibold tracking-widest uppercase"
+              style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(212,175,55,0.65)" }}
+            >
+              Skill Matrix
+            </span>
+            <div className="flex-1 h-px" style={{ background: "rgba(185,28,28,0.15)" }} />
+            <span
+              className="text-xs font-medium"
+              style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(74,222,128,0.6)" }}
+            >
+              ● Operational
+            </span>
           </div>
+
+          {/* Skills grid — original logic preserved */}
+          <div className="grid md:grid-cols-2 gap-x-10 gap-y-1">
+            {skills.map((skill, index) => (
+              <SkillBar key={index} name={skill.name} level={skill.level} />
+            ))}
+          </div>
+
+          {/* Bottom shimmer */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px rounded-b-2xl"
+            style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 35%, #d4af37 50%, #b91c1c 65%, transparent 100%)" }}
+          />
+        </motion.div>
+
+        {/* ── Tech tag pills — original logic preserved ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center gap-3"
+        >
+          {techTags.map((tech, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, scale: 0.88 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: index * 0.06 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.06, y: -2 }}
+              className="px-4 py-2 text-xs font-medium rounded-full cursor-default transition-all duration-300"
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                background: "rgba(185,28,28,0.08)",
+                border: "1px solid rgba(185,28,28,0.25)",
+                /* Plain color — no gradient clip on interactive element */
+                color: "rgba(239,68,68,0.75)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(212,175,55,0.08)";
+                e.currentTarget.style.borderColor = "rgba(212,175,55,0.4)";
+                e.currentTarget.style.color = "#d4af37";
+                e.currentTarget.style.boxShadow = "0 0 14px rgba(212,175,55,0.12)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(185,28,28,0.08)";
+                e.currentTarget.style.borderColor = "rgba(185,28,28,0.25)";
+                e.currentTarget.style.color = "rgba(239,68,68,0.75)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {tech}
+            </motion.span>
+          ))}
         </motion.div>
       </div>
+
+      {/* Section dividers */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }}
+      />
+
+      <style>{`
+        @keyframes statusPulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.3; }
+        }
+      `}</style>
     </section>
   );
 };

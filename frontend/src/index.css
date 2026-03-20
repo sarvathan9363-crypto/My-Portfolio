@@ -1,60 +1,255 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+/* ── Google Fonts — Premium Typography Stack ── */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Reset and global styles */
-* {
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
   scroll-behavior: smooth;
 }
 
+/* ============================================================
+   BODY
+   ============================================================ */
 body {
-  font-family: 'Inter', sans-serif;
-  background: #0a0a0a;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  background: #0a0404;
+  color: rgba(220, 220, 220, 0.88);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom utility classes */
-.font-orbitron {
-  font-family: 'Orbitron', monospace;
+#root {
+  min-height: 100vh;
 }
 
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* ============================================================
+   TYPOGRAPHY
+   Sora    → headings, display text, stat values, logo
+   Outfit  → body text, labels, buttons, UI elements
+   ============================================================ */
+h1, h2, h3 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
 }
 
-.neon-border {
-  border: 1px solid #00ffff;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+h4, h5, h6 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  color: #ffffff;
 }
 
+p {
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.75;
+  color: rgba(200, 200, 200, 0.8);
+}
+
+code, pre, kbd {
+  font-family: 'Outfit', monospace;
+}
+
+input, textarea, select, button {
+  font-family: 'Outfit', sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================================
+   UTILITY FONT CLASSES
+   ============================================================ */
+.font-display {
+  font-family: 'Sora', sans-serif !important;
+}
+
+.font-body {
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* ============================================================
+   GLASS CARD
+   ============================================================ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  border-radius: 16px;
+}
+
+/* ============================================================
+   LUXURY BORDER UTILITIES
+   ============================================================ */
+.border-red-glow {
+  border: 1px solid rgba(185, 28, 28, 0.5);
+  box-shadow: 0 0 12px rgba(185, 28, 28, 0.2);
+}
+
+.border-gold-glow {
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+}
+
+/* ============================================================
+   GRADIENT TEXT — static use only, never on hover transitions
+   ============================================================ */
 .text-gradient {
-  background: linear-gradient(45deg, #00ffff, #ff0080, #8000ff);
+  background: linear-gradient(135deg, #ffffff 0%, #d4af37 55%, #ef4444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.bg-cyber {
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(128, 0, 255, 0.1) 0%, transparent 50%),
-    #0a0a0a;
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5d06e 0%, #d4af37 50%, #b8941e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Swiper bullet customization */
+.text-gradient-red {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   LUXURY BACKGROUND
+   ============================================================ */
+.bg-luxury {
+  background:
+    radial-gradient(circle at 15% 50%, rgba(185, 28, 28, 0.08) 0%, transparent 55%),
+    radial-gradient(circle at 85% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(185, 28, 28, 0.05) 0%, transparent 50%),
+    #0a0404;
+}
+
+/* ============================================================
+   FADE IN
+   ============================================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   SWIPER PAGINATION
+   ============================================================ */
 .swiper-pagination-bullet {
-  background: rgba(255, 255, 255, 0.3) !important;
+  width: 8px !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: rgba(185, 28, 28, 0.35) !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
 }
 
 .swiper-pagination-bullet-active {
-  background: #00ffff !important;
-  box-shadow: 0 0 10px #00ffff !important;
+  width: 28px !important;
+  background: linear-gradient(90deg, #b91c1c, #d4af37) !important;
+  box-shadow: 0 0 8px rgba(185, 28, 28, 0.5) !important;
 }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060202;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(185, 28, 28, 0.45);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(185, 28, 28, 0.45) #060202;
+}
+
+/* ============================================================
+   TEXT SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(185, 28, 28, 0.3);
+  color: #ffffff;
+}
+
+/* ============================================================
+   FOCUS RING
+   ============================================================ */
+:focus-visible {
+  outline: 1px solid rgba(212, 175, 55, 0.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+@keyframes redPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(185, 28, 28, 0.5); }
+  50%       { box-shadow: 0 0 20px rgba(185, 28, 28, 0.9), 0 0 35px rgba(185, 28, 28, 0.3); }
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(212, 175, 55, 0.5); }
+  50%       { box-shadow: 0 0 16px rgba(212, 175, 55, 0.9), 0 0 28px rgba(212, 175, 55, 0.3); }
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+@keyframes windowOpen {
+  from { opacity: 0; transform: scale(0.93) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================================
+   ANIMATION UTILITY CLASSES
+   ============================================================ */
+.animate-red-pulse   { animation: redPulse 2.5s ease-in-out infinite; }
+.animate-gold-pulse  { animation: goldPulse 2.5s ease-in-out infinite; }
+.animate-status      { animation: statusPulse 2s ease-in-out infinite; }
+.animate-window-open { animation: windowOpen 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
