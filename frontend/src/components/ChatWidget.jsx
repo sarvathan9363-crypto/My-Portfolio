@@ -18,6 +18,10 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  const API_URL = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api/chat`
+    : "http://localhost:5000/api/chat";
+
   const sendMessage = async () => {
     if (!userMessage.trim()) return;
 
@@ -26,7 +30,7 @@ export default function ChatWidget() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await axios.post(API_URL, {
         conversationHistory: updatedMessages,
       });
       setMessages([...updatedMessages, { role: "assistant", content: res.data.reply }]);
@@ -53,10 +57,16 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* ── Chat Bubble ── */}
+      {/* ── Chat Bubble ──
+          FIX: On mobile, raise the button above the sticky "Hire Me" bar.
+          The sticky bar is ~56px tall, so we use bottom-20 on mobile (md:bottom-6).
+          z-50 keeps it above the sticky bar (z-40).
+      ── */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300"
+        className="fixed z-50 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300
+                   bottom-20 right-4
+                   md:bottom-6 md:right-6"
         style={{
           background: isOpen
             ? "linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)"
@@ -78,7 +88,6 @@ export default function ChatWidget() {
         }}
         title="Chat with Sarvathan's Assistant"
       >
-        {/* Pulse ring */}
         <span
           className="absolute w-14 h-14 rounded-2xl pointer-events-none"
           style={{ border: "1px solid rgba(185,28,28,0.5)", animation: "chatPulse 2.4s ease-in-out infinite" }}
@@ -91,33 +100,39 @@ export default function ChatWidget() {
         </span>
       </button>
 
-      {/* ── Chat Window ── */}
+      {/* ── Chat Window ──
+          On mobile: position above the AI button which is above the sticky bar.
+          bottom: 5.5rem (88px) on mobile = clears the sticky bar + button.
+          On md+: standard bottom-24.
+      ── */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-6 z-50 flex flex-col overflow-hidden rounded-2xl"
+          className="fixed z-50 flex flex-col overflow-hidden rounded-2xl
+                     bottom-36 right-3 left-3
+                     md:bottom-24 md:right-6 md:left-auto"
           style={{
-            width: "360px",
+            width: "auto",
+            maxWidth: "360px",
+            marginLeft: "auto",
+            /* Limit height on mobile so it never covers the whole screen */
+            maxHeight: "calc(100dvh - 180px)",
             background: "linear-gradient(160deg, #0a0404 0%, #0f0606 100%)",
             border: "1px solid rgba(185,28,28,0.35)",
             boxShadow: "0 24px 80px rgba(0,0,0,0.7), 0 0 40px rgba(185,28,28,0.1), inset 0 1px 0 rgba(255,255,255,0.04)",
             animation: "windowOpen 0.28s cubic-bezier(0.34,1.56,0.64,1)",
           }}
         >
-          {/* Top shimmer line */}
+          {/* Top shimmer */}
           <div
             className="absolute top-0 left-0 right-0 h-px"
             style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)" }}
           />
 
-          {/* ── Header ── */}
+          {/* Header */}
           <div
             className="relative flex items-center gap-3 px-4 py-3.5"
-            style={{
-              borderBottom: "1px solid rgba(185,28,28,0.2)",
-              background: "rgba(185,28,28,0.05)",
-            }}
+            style={{ borderBottom: "1px solid rgba(185,28,28,0.2)", background: "rgba(185,28,28,0.05)" }}
           >
-            {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white"
@@ -137,10 +152,7 @@ export default function ChatWidget() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p
-                className="text-sm font-bold text-white truncate"
-                style={{ fontFamily: "'Sora', sans-serif", letterSpacing: "0.05em" }}
-              >
+              <p className="text-sm font-bold text-white truncate" style={{ fontFamily: "'Sora', sans-serif", letterSpacing: "0.05em" }}>
                 Sarvathan's Assistant
               </p>
               <p className="text-xs" style={{ color: "rgba(74,222,128,0.75)", fontFamily: "'Outfit', sans-serif" }}>
@@ -161,20 +173,13 @@ export default function ChatWidget() {
             </div>
           </div>
 
-          {/* ── Messages ── */}
+          {/* Messages */}
           <div
             className="flex flex-col gap-3 p-4 overflow-y-auto"
-            style={{
-              height: "300px",
-              scrollbarWidth: "thin",
-              scrollbarColor: "rgba(185,28,28,0.35) transparent",
-            }}
+            style={{ height: "260px", scrollbarWidth: "thin", scrollbarColor: "rgba(185,28,28,0.35) transparent" }}
           >
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className="max-w-[82%] px-3.5 py-2.5 text-sm leading-relaxed rounded-xl"
                   style={
@@ -199,10 +204,7 @@ export default function ChatWidget() {
                   }
                 >
                   {msg.role === "assistant" && (
-                    <span
-                      className="block text-xs font-semibold mb-1"
-                      style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif" }}
-                    >
+                    <span className="block text-xs font-semibold mb-1" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif" }}>
                       Assistant
                     </span>
                   )}
@@ -211,7 +213,6 @@ export default function ChatWidget() {
               </div>
             ))}
 
-            {/* Typing indicator */}
             {loading && (
               <div className="flex justify-start">
                 <div
@@ -226,11 +227,7 @@ export default function ChatWidget() {
                     <span
                       key={delay}
                       className="w-1.5 h-1.5 rounded-full"
-                      style={{
-                        background: "#d4af37",
-                        animation: "typingDot 1.2s ease-in-out infinite",
-                        animationDelay: `${delay}ms`,
-                      }}
+                      style={{ background: "#d4af37", animation: "typingDot 1.2s ease-in-out infinite", animationDelay: `${delay}ms` }}
                     />
                   ))}
                 </div>
@@ -241,18 +238,10 @@ export default function ChatWidget() {
           </div>
 
           {/* Divider */}
-          <div
-            style={{
-              height: "1px",
-              background: "linear-gradient(90deg, transparent, rgba(185,28,28,0.3), rgba(212,175,55,0.2), transparent)",
-            }}
-          />
+          <div style={{ height: "1px", background: "linear-gradient(90deg, transparent, rgba(185,28,28,0.3), rgba(212,175,55,0.2), transparent)" }} />
 
-          {/* ── Input row ── */}
-          <div
-            className="flex items-center gap-2 px-3 py-2.5"
-            style={{ background: "rgba(0,0,0,0.25)" }}
-          >
+          {/* Input */}
+          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: "rgba(0,0,0,0.25)" }}>
             <input
               type="text"
               value={userMessage}
@@ -260,24 +249,16 @@ export default function ChatWidget() {
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
               className="flex-1 bg-transparent text-sm outline-none"
-              style={{
-                color: "rgba(220,220,220,0.9)",
-                fontFamily: "'Outfit', sans-serif",
-                caretColor: "#d4af37",
-              }}
+              style={{ color: "rgba(220,220,220,0.9)", fontFamily: "'Outfit', sans-serif", caretColor: "#d4af37" }}
             />
             <button
               onClick={sendMessage}
               disabled={loading || !userMessage.trim()}
               className="px-4 py-2 rounded-xl text-xs font-semibold tracking-wide uppercase transition-all duration-200"
               style={{
-                background:
-                  loading || !userMessage.trim()
-                    ? "rgba(185,28,28,0.15)"
-                    : "linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)",
+                background: loading || !userMessage.trim() ? "rgba(185,28,28,0.15)" : "linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)",
                 border: "1px solid rgba(185,28,28,0.4)",
-                color:
-                  loading || !userMessage.trim() ? "rgba(255,255,255,0.3)" : "#fff",
+                color: loading || !userMessage.trim() ? "rgba(255,255,255,0.3)" : "#fff",
                 fontFamily: "'Outfit', sans-serif",
                 cursor: loading || !userMessage.trim() ? "not-allowed" : "pointer",
               }}
@@ -299,24 +280,16 @@ export default function ChatWidget() {
           {/* Footer */}
           <div
             className="text-center py-1.5 text-xs font-medium"
-            style={{
-              color: "rgba(212,175,55,0.25)",
-              borderTop: "1px solid rgba(185,28,28,0.08)",
-              fontFamily: "'Outfit', sans-serif",
-              letterSpacing: "0.05em",
-            }}
+            style={{ color: "rgba(212,175,55,0.25)", borderTop: "1px solid rgba(185,28,28,0.08)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}
           >
+            Powered by OpenRouter
           </div>
 
-          {/* Bottom shimmer line */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent, #b91c1c, #d4af37, #b91c1c, transparent)" }}
-          />
+          <div className="absolute bottom-0 left-0 right-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, #b91c1c, #d4af37, #b91c1c, transparent)" }} />
         </div>
       )}
 
-      {/* ── Keyframes ── */}
       <style>{`
         @keyframes chatPulse {
           0%, 100% { opacity: 0.35; transform: scale(1); }

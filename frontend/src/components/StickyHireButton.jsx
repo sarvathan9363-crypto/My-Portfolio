@@ -2,7 +2,7 @@ export default function StickyHireButton() {
   return (
     <a
       href="#contact"
-      className="fixed bottom-0 left-0 right-0 md:hidden z-50 flex items-center justify-center gap-2.5 py-4 text-sm font-semibold transition-all duration-300"
+      className="fixed bottom-0 left-0 right-0 md:hidden z-40 flex items-center justify-center gap-2.5 py-4 text-sm font-semibold transition-all duration-300"
       style={{
         fontFamily: "'Outfit', sans-serif",
         background: "linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #b91c1c 100%)",
@@ -10,6 +10,7 @@ export default function StickyHireButton() {
         color: "#ffffff",
         boxShadow: "0 -4px 24px rgba(185,28,28,0.4), 0 -1px 0 rgba(212,175,55,0.15)",
         letterSpacing: "0.04em",
+        /* z-40 so AI button (z-50) always sits above it */
       }}
       onTouchStart={(e) => {
         e.currentTarget.style.background = "linear-gradient(135deg, #991b1b 0%, #b91c1c 50%, #dc2626 100%)";
@@ -38,7 +39,6 @@ export default function StickyHireButton() {
 
       Hire Me
 
-      {/* Arrow */}
       <span style={{ opacity: 0.8 }}>→</span>
 
       <style>{`

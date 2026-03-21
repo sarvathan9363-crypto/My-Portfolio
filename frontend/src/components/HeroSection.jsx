@@ -15,7 +15,6 @@ const HeroSection = () => {
   const [displayed, setDisplayed] = useState("");
   const [typing, setTyping] = useState(true);
 
-  // Typewriter effect — pure state machine, no libraries needed
   useEffect(() => {
     const current = roles[roleIndex];
     let timeout;
@@ -77,8 +76,16 @@ const HeroSection = () => {
         />
       ))}
 
-      {/* ── Main content ── */}
-      <div className="max-w-6xl mx-auto px-6 lg:px-10 relative z-10 grid md:grid-cols-2 gap-12 items-center pt-20">
+      {/* ── Main content ──
+           FIX 1: pt-20 on mobile causes large blank space above.
+           Use pt-20 only on md+, reduce to pt-16 on mobile.
+           FIX 2: On mobile, stack single column and reduce bottom
+           padding so sticky bar doesn't cover content (pb-24 md:pb-8).
+      ── */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-10 relative z-10 w-full
+                      pt-20 pb-24
+                      md:pt-20 md:pb-8
+                      grid md:grid-cols-2 gap-8 md:gap-12 items-center">
 
         {/* ── LEFT — Text ── */}
         <div>
@@ -92,7 +99,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 mb-7 px-4 py-2 rounded-full"
+              className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full"
               style={{
                 background: "rgba(34,197,94,0.06)",
                 border: "1px solid rgba(34,197,94,0.22)",
@@ -119,80 +126,48 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="mb-5"
+              className="mb-4"
             >
-              {/* Eyebrow label */}
+              {/* Eyebrow */}
               <p
-                className="text-xs font-semibold tracking-[0.22em] uppercase mb-4"
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  color: "rgba(212,175,55,0.5)",
-                }}
+                className="text-xs font-semibold tracking-[0.2em] uppercase mb-3"
+                style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(212,175,55,0.5)" }}
               >
                 Engineering · Development · Freelance
               </p>
 
-              {/* Main headline — 3 lines */}
+              {/* Main headline */}
               <h1
                 className="font-bold leading-none mb-4"
                 style={{
                   fontFamily: "'Sora', sans-serif",
-                  fontSize: "clamp(2.2rem, 5vw, 3.6rem)",
+                  fontSize: "clamp(2rem, 7vw, 3.6rem)",
                   lineHeight: 1.07,
                 }}
               >
-                {/* Line 1 — static, safe gradient clip */}
-                <span
-                  style={{
-                    background: "linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #d4af37 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "block",
-                  }}
-                >
+                <span style={{ background: "linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #d4af37 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", display: "block" }}>
                   Building Digital
                 </span>
-
-                {/* Line 2 — static */}
-                <span
-                  style={{
-                    background: "linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 60%, #d4af37 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "block",
-                  }}
-                >
+                <span style={{ background: "linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 60%, #d4af37 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", display: "block" }}>
                   Products That
                 </span>
-
-                {/* Line 3 — red accent, static */}
-                <span
-                  style={{
-                    background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 45%, #ef4444 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    display: "block",
-                  }}
-                >
+                <span style={{ background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 45%, #ef4444 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", display: "block" }}>
                   Actually Work.
                 </span>
               </h1>
 
-              {/* ── Animated role switcher ── */}
-              <div className="flex items-center gap-3 mt-6" style={{ minHeight: "48px" }}>
-                {/* Gold vertical bar accent */}
+              {/* Animated role switcher */}
+              <div className="flex items-center gap-3 mt-5" style={{ minHeight: "44px" }}>
                 <div
-                  className="w-0.5 h-9 rounded-full flex-shrink-0"
+                  className="w-0.5 h-8 rounded-full flex-shrink-0"
                   style={{ background: "linear-gradient(180deg, #d4af37 0%, rgba(185,28,28,0.6) 100%)" }}
                 />
-
                 <div className="flex items-center">
-                  {/* Typed text — plain color, no gradient clip (interactive/animated) */}
                   <span
                     className="font-bold"
                     style={{
                       fontFamily: "'Sora', sans-serif",
-                      fontSize: "clamp(1rem, 2.2vw, 1.35rem)",
+                      fontSize: "clamp(0.95rem, 3.5vw, 1.35rem)",
                       color: "#d4af37",
                       letterSpacing: "0.02em",
                       minWidth: "10ch",
@@ -200,8 +175,6 @@ const HeroSection = () => {
                   >
                     {displayed}
                   </span>
-
-                  {/* Blinking cursor */}
                   <motion.span
                     animate={{ opacity: [1, 0, 1] }}
                     transition={{ duration: 0.8, repeat: Infinity, ease: "steps(1)" }}
@@ -226,12 +199,8 @@ const HeroSection = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="max-w-lg mb-9 text-sm"
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                color: "rgba(180,180,180,0.62)",
-                lineHeight: 1.88,
-              }}
+              className="max-w-lg mb-7 text-sm"
+              style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(180,180,180,0.62)", lineHeight: 1.88 }}
             >
               Engineering student turned developer. I design and build scalable
               web applications — from polished frontends to robust APIs — for
@@ -243,11 +212,11 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="flex flex-wrap gap-4 mb-12"
+              className="flex flex-wrap gap-3 mb-10"
             >
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all duration-300"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
                 style={{
                   fontFamily: "'Outfit', sans-serif",
                   background: "linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)",
@@ -270,7 +239,7 @@ const HeroSection = () => {
 
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all duration-300"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
                 style={{
                   fontFamily: "'Outfit', sans-serif",
                   background: "rgba(212,175,55,0.06)",
@@ -299,166 +268,194 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* ── RIGHT — Premium profile visual (unchanged) ── */}
-        <div className="flex justify-center">
+        {/* ── RIGHT — SC profile visual ──
+             FIX 3: On mobile the circle was w-80 (320px) which overflows.
+             Scale the entire visual down on small screens using a wrapper
+             with transform scale. Also hide on very small screens to avoid
+             layout issues, show centered below on sm, side-by-side on md+.
+        ── */}
+        <div className="flex justify-center items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
             className="relative flex items-center justify-center"
+            style={{
+              /* Scale down the whole visual on mobile so it fits */
+              transform: "scale(var(--circle-scale, 1))",
+            }}
           >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute w-80 h-80 rounded-full"
-              style={{ border: "1px dashed rgba(185,28,28,0.25)" }}
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute w-64 h-64 rounded-full"
-              style={{ border: "1px solid rgba(212,175,55,0.18)" }}
-            />
+            {/* Responsive scale via inline style on wrapper */}
+            <style>{`
+              @media (max-width: 767px) {
+                .sc-visual-wrapper { transform: scale(0.58) !important; }
+              }
+              @media (min-width: 768px) and (max-width: 1023px) {
+                .sc-visual-wrapper { transform: scale(0.78) !important; }
+              }
+            `}</style>
 
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-              <div
-                key={deg}
-                className="absolute w-80 h-80 rounded-full flex items-start justify-center pointer-events-none"
-                style={{ transform: `rotate(${deg}deg)` }}
+            <div className="sc-visual-wrapper relative flex items-center justify-center"
+                 style={{ width: "320px", height: "320px" }}>
+
+              {/* Outer rotating dashed ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute w-80 h-80 rounded-full"
+                style={{ border: "1px dashed rgba(185,28,28,0.25)" }}
+              />
+
+              {/* Mid counter-rotating ring */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute w-64 h-64 rounded-full"
+                style={{ border: "1px solid rgba(212,175,55,0.18)" }}
+              />
+
+              {/* Tick marks */}
+              {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+                <div
+                  key={deg}
+                  className="absolute w-80 h-80 rounded-full flex items-start justify-center pointer-events-none"
+                  style={{ transform: `rotate(${deg}deg)` }}
+                >
+                  <div
+                    className="w-px h-3 mt-1"
+                    style={{ background: deg % 90 === 0 ? "rgba(185,28,28,0.6)" : "rgba(185,28,28,0.25)" }}
+                  />
+                </div>
+              ))}
+
+              {/* Pulsing rings */}
+              <motion.div
+                animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.9, 0.5] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute w-56 h-56 rounded-full"
+                style={{ border: "1px solid rgba(185,28,28,0.35)", boxShadow: "0 0 24px rgba(185,28,28,0.12)" }}
+              />
+              <motion.div
+                animate={{ scale: [1, 1.04, 1], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="absolute w-44 h-44 rounded-full"
+                style={{ border: "1px solid rgba(212,175,55,0.2)" }}
+              />
+
+              {/* Center circle */}
+              <motion.div
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="relative w-40 h-40 rounded-full flex items-center justify-center z-10"
+                style={{
+                  background: "linear-gradient(135deg, #180404 0%, #2a0606 50%, #180404 100%)",
+                  border: "2px solid rgba(185,28,28,0.55)",
+                  boxShadow: "0 0 32px rgba(185,28,28,0.35), 0 0 64px rgba(185,28,28,0.12), inset 0 0 28px rgba(185,28,28,0.08)",
+                }}
               >
                 <div
-                  className="w-px h-3 mt-1"
-                  style={{ background: deg % 90 === 0 ? "rgba(185,28,28,0.6)" : "rgba(185,28,28,0.25)" }}
+                  className="absolute inset-3 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle, rgba(185,28,28,0.18) 0%, transparent 70%)",
+                    animation: "innerGlow 2.5s ease-in-out infinite",
+                  }}
                 />
-              </div>
-            ))}
+                <span
+                  className="relative text-4xl font-black z-10"
+                  style={{
+                    fontFamily: "'Sora', sans-serif",
+                    background: "linear-gradient(135deg, #ffffff 0%, #d4af37 60%, #ef4444 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  SC
+                </span>
+                <div
+                  className="absolute inset-2 rounded-full pointer-events-none"
+                  style={{ border: "1px solid rgba(212,175,55,0.12)" }}
+                />
+              </motion.div>
 
-            <motion.div
-              animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0.9, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute w-56 h-56 rounded-full"
-              style={{ border: "1px solid rgba(185,28,28,0.35)", boxShadow: "0 0 24px rgba(185,28,28,0.12)" }}
-            />
-            <motion.div
-              animate={{ scale: [1, 1.04, 1], opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute w-44 h-44 rounded-full"
-              style={{ border: "1px solid rgba(212,175,55,0.2)" }}
-            />
-
-            <motion.div
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="relative w-40 h-40 rounded-full flex items-center justify-center z-10"
-              style={{
-                background: "linear-gradient(135deg, #180404 0%, #2a0606 50%, #180404 100%)",
-                border: "2px solid rgba(185,28,28,0.55)",
-                boxShadow: "0 0 32px rgba(185,28,28,0.35), 0 0 64px rgba(185,28,28,0.12), inset 0 0 28px rgba(185,28,28,0.08)",
-              }}
-            >
-              <div
-                className="absolute inset-3 rounded-full"
+              {/* Floating badges */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="absolute -top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap"
                 style={{
-                  background: "radial-gradient(circle, rgba(185,28,28,0.18) 0%, transparent 70%)",
-                  animation: "innerGlow 2.5s ease-in-out infinite",
-                }}
-              />
-              {/* Static initials — safe to use gradient clip */}
-              <span
-                className="relative text-4xl font-black z-10"
-                style={{
-                  fontFamily: "'Sora', sans-serif",
-                  background: "linear-gradient(135deg, #ffffff 0%, #d4af37 60%, #ef4444 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  letterSpacing: "0.05em",
+                  fontFamily: "'Outfit', sans-serif",
+                  background: "rgba(10,4,4,0.92)",
+                  border: "1px solid rgba(185,28,28,0.4)",
+                  color: "rgba(239,68,68,0.85)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
                 }}
               >
-                SC
-              </span>
-              <div
-                className="absolute inset-2 rounded-full pointer-events-none"
-                style={{ border: "1px solid rgba(212,175,55,0.12)" }}
-              />
-            </motion.div>
+                Full Stack Developer
+              </motion.div>
 
-            {/* Floating badges */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="absolute -top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap"
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                background: "rgba(10,4,4,0.92)",
-                border: "1px solid rgba(185,28,28,0.4)",
-                color: "rgba(239,68,68,0.85)",
-                backdropFilter: "blur(8px)",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-              }}
-            >
-              Full Stack Developer
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  background: "rgba(10,4,4,0.92)",
+                  border: "1px solid rgba(212,175,55,0.32)",
+                  color: "rgba(212,175,55,0.75)",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                }}
+              >
+                Electrical Engineer
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap"
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                background: "rgba(10,4,4,0.92)",
-                border: "1px solid rgba(212,175,55,0.32)",
-                color: "rgba(212,175,55,0.75)",
-                backdropFilter: "blur(8px)",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-              }}
-            >
-              Electrical Engineer
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.0 }}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 px-2 py-1.5 rounded-lg text-xs font-medium"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  background: "rgba(10,4,4,0.92)",
+                  border: "1px solid rgba(185,28,28,0.28)",
+                  color: "rgba(185,28,28,0.65)",
+                  backdropFilter: "blur(8px)",
+                  writingMode: "vertical-rl",
+                  textOrientation: "mixed",
+                }}
+              >
+                React · Node
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.0 }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 px-2 py-1.5 rounded-lg text-xs font-medium"
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                background: "rgba(10,4,4,0.92)",
-                border: "1px solid rgba(185,28,28,0.28)",
-                color: "rgba(185,28,28,0.65)",
-                backdropFilter: "blur(8px)",
-                writingMode: "vertical-rl",
-                textOrientation: "mixed",
-              }}
-            >
-              React · Node
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.1 }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 px-2 py-1.5 rounded-lg text-xs font-medium"
-              style={{
-                fontFamily: "'Outfit', sans-serif",
-                background: "rgba(10,4,4,0.92)",
-                border: "1px solid rgba(212,175,55,0.22)",
-                color: "rgba(212,175,55,0.55)",
-                backdropFilter: "blur(8px)",
-                writingMode: "vertical-rl",
-                textOrientation: "mixed",
-              }}
-            >
-              Mongo · SQL
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.1 }}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 px-2 py-1.5 rounded-lg text-xs font-medium"
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  background: "rgba(10,4,4,0.92)",
+                  border: "1px solid rgba(212,175,55,0.22)",
+                  color: "rgba(212,175,55,0.55)",
+                  backdropFilter: "blur(8px)",
+                  writingMode: "vertical-rl",
+                  textOrientation: "mixed",
+                }}
+              >
+                Mongo · SQL
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
 
-      {/* ── Scroll indicator ── */}
+      {/* ── Scroll indicator — hidden on mobile to save space ── */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 hidden md:flex"
         animate={{ y: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
       >
