@@ -44,7 +44,7 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-screen relative overflow-hidden flex items-center"
+      className="relative overflow-hidden"
       style={{ background: "linear-gradient(135deg, #060202 0%, #0a0404 50%, #080303 100%)" }}
     >
       {/* ── Ambient radial glows ── */}
@@ -77,18 +77,18 @@ const HeroSection = () => {
       ))}
 
       {/* ── Main content ──
-           FIX 1: pt-20 on mobile causes large blank space above.
-           Use pt-20 only on md+, reduce to pt-16 on mobile.
-           FIX 2: On mobile, stack single column and reduce bottom
-           padding so sticky bar doesn't cover content (pb-24 md:pb-8).
+          Mobile: natural height, pt just clears navbar, pb clears sticky bar
+          Desktop: min-h-screen with flex centering for full-screen feel
       ── */}
-      <div className="max-w-6xl mx-auto px-6 lg:px-10 relative z-10 w-full
-                      pt-20 pb-24
-                      md:pt-20 md:pb-8
-                      grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+      <div
+        className="max-w-6xl mx-auto px-6 lg:px-10 relative z-10
+                   grid md:grid-cols-2 gap-8 md:gap-12 md:items-center
+                   pt-24 pb-20
+                   md:min-h-screen md:pt-0 md:pb-0"
+      >
 
         {/* ── LEFT — Text ── */}
-        <div>
+        <div className="md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -121,7 +121,7 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* ── Heading block ── */}
+            {/* Heading block */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -268,36 +268,27 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* ── RIGHT — SC profile visual ──
-             FIX 3: On mobile the circle was w-80 (320px) which overflows.
-             Scale the entire visual down on small screens using a wrapper
-             with transform scale. Also hide on very small screens to avoid
-             layout issues, show centered below on sm, side-by-side on md+.
-        ── */}
-        <div className="flex justify-center items-center">
+        {/* ── RIGHT — SC profile visual ── */}
+        <div className="flex justify-center items-center py-10 md:py-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
             className="relative flex items-center justify-center"
-            style={{
-              /* Scale down the whole visual on mobile so it fits */
-              transform: "scale(var(--circle-scale, 1))",
-            }}
           >
-            {/* Responsive scale via inline style on wrapper */}
             <style>{`
               @media (max-width: 767px) {
-                .sc-visual-wrapper { transform: scale(0.58) !important; }
+                .sc-visual-wrapper { transform: scale(0.62) !important; }
               }
               @media (min-width: 768px) and (max-width: 1023px) {
                 .sc-visual-wrapper { transform: scale(0.78) !important; }
               }
             `}</style>
 
-            <div className="sc-visual-wrapper relative flex items-center justify-center"
-                 style={{ width: "320px", height: "320px" }}>
-
+            <div
+              className="sc-visual-wrapper relative flex items-center justify-center"
+              style={{ width: "320px", height: "320px" }}
+            >
               {/* Outer rotating dashed ring */}
               <motion.div
                 animate={{ rotate: 360 }}
@@ -453,9 +444,9 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* ── Scroll indicator — hidden on mobile to save space ── */}
+      {/* Scroll indicator — desktop only */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 hidden md:flex"
+        className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2"
         animate={{ y: [0, 8, 0] }}
         transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
       >

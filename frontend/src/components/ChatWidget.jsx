@@ -18,9 +18,7 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const API_URL = import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api/chat`
-    : "http://localhost:5000/api/chat";
+  const API_URL = (import.meta.env.VITE_API_URL || "https://my-portfolio-ux9c.onrender.com") + "/api/chat";
 
   const sendMessage = async () => {
     if (!userMessage.trim()) return;
@@ -114,8 +112,11 @@ export default function ChatWidget() {
             width: "auto",
             maxWidth: "360px",
             marginLeft: "auto",
-            /* Limit height on mobile so it never covers the whole screen */
+            /* Mobile: fills most of the screen above the buttons */
             maxHeight: "calc(100dvh - 180px)",
+            minHeight: "320px",
+            display: "flex",
+            flexDirection: "column",
             background: "linear-gradient(160deg, #0a0404 0%, #0f0606 100%)",
             border: "1px solid rgba(185,28,28,0.35)",
             boxShadow: "0 24px 80px rgba(0,0,0,0.7), 0 0 40px rgba(185,28,28,0.1), inset 0 1px 0 rgba(255,255,255,0.04)",
@@ -175,8 +176,8 @@ export default function ChatWidget() {
 
           {/* Messages */}
           <div
-            className="flex flex-col gap-3 p-4 overflow-y-auto"
-            style={{ height: "260px", scrollbarWidth: "thin", scrollbarColor: "rgba(185,28,28,0.35) transparent" }}
+            className="flex flex-col gap-3 p-4 overflow-y-auto flex-1 min-h-0"
+            style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(185,28,28,0.35) transparent" }}
           >
             {messages.map((msg, index) => (
               <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
