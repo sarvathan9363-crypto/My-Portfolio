@@ -10,7 +10,7 @@ export default function TestimonialsSection() {
 
   const API_URL = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api/feedback`
-    : "http://localhost:5000/api/feedback";
+    : "https://my-portfolio-pgwb.onrender.com/api/feedback";
 
   useEffect(() => {
     fetch(API_URL)

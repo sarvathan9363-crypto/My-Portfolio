@@ -17,7 +17,16 @@ connectDB();
 // ── App ────────────────────────────────────────────────────────
 const app = express();
 
-app.use(cors());
+// ── CORS ───────────────────────────────────────────────────────
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://my-portfolio-eight-topaz-35.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // ── Routes ─────────────────────────────────────────────────────
