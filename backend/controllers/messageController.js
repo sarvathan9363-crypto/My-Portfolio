@@ -17,21 +17,26 @@ export const createMessage = async (req, res) => {
     }
 
     // 1. Save to database
-    const newMessage = await Message.create({ name, email, projectType, message });
+    const newMessage = await Message.create({
+      name,
+      email,
+      projectType,
+      message,
+    });
 
-    // 2. Send emails concurrently (don't block response if email fails)
-    Promise.allSettled([
+    // 2. Send emails and wait properly
+    const results = await Promise.allSettled([
       sendContactNotificationToOwner({ name, email, projectType, message }),
       sendContactConfirmationToClient({ name, email, projectType }),
-    ]).then((results) => {
-      results.forEach((result, i) => {
-        if (result.status === "rejected") {
-          console.error(
-            `❌ Email ${i === 0 ? "owner notification" : "client confirmation"} failed:`,
-            result.reason?.message
-          );
-        }
-      });
+    ]);
+
+    results.forEach((result, i) => {
+      if (result.status === "rejected") {
+        console.error(
+          `❌ Email ${i === 0 ? "owner notification" : "client confirmation"} failed:`,
+          result.reason?.message
+        );
+      }
     });
 
     return res.status(201).json({
@@ -42,6 +47,7 @@ export const createMessage = async (req, res) => {
 
   } catch (error) {
     console.error("createMessage error:", error.message);
+
     return res.status(500).json({
       success: false,
       error: "Something went wrong. Please try again.",
@@ -53,9 +59,18 @@ export const createMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, messages });
+
+    return res.status(200).json({
+      success: true,
+      messages,
+    });
+
   } catch (error) {
     console.error("getMessages error:", error.message);
-    return res.status(500).json({ success: false, error: "Failed to fetch messages." });
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch messages.",
+    });
   }
 };
