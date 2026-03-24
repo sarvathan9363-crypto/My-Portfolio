@@ -12,10 +12,12 @@ const ContactSection = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
+  // ✅ FIX: fallback now points to the real deployed backend, not localhost
   const API_URL = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api/messages`
-    : "http://localhost:5000/api/messages";
+    : "https://my-portfolio-ux9c.onrender.com/api/messages";
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,6 +26,7 @@ const ContactSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError("");
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -35,9 +38,12 @@ const ContactSection = () => {
         setSubmitted(true);
         setFormData({ name: "", email: "", projectType: "", message: "" });
         setTimeout(() => setSubmitted(false), 4000);
+      } else {
+        setError(data.message || "Something went wrong. Please try again.");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError("Failed to send message. Please try again later.");
     }
     setIsSubmitting(false);
   };
@@ -176,6 +182,24 @@ const ContactSection = () => {
                 <CheckCircle className="text-green-400 flex-shrink-0" size={18} />
                 <span className="text-sm font-medium" style={{ color: "#4ade80", fontFamily: "'Outfit', sans-serif" }}>
                   Message sent successfully!
+                </span>
+              </motion.div>
+            )}
+
+            {/* ✅ NEW: Error state */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-5 flex items-center gap-3 p-4 rounded-xl"
+                style={{
+                  background: "rgba(239,68,68,0.07)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  borderLeft: "3px solid #ef4444",
+                }}
+              >
+                <span className="text-sm font-medium" style={{ color: "#f87171", fontFamily: "'Outfit', sans-serif" }}>
+                  {error}
                 </span>
               </motion.div>
             )}
