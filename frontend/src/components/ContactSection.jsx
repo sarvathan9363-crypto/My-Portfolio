@@ -17,7 +17,7 @@ const ContactSection = () => {
   // ✅ FIX: fallback now points to the real deployed backend, not localhost
   const API_URL = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api/messages`
-    : "https://my-portfolio-ux9c.onrender.com/api/messages";
+    : "https://my-portfolio-pgwb.onrender.com/api/messages";
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
