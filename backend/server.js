@@ -11,14 +11,6 @@ import chatRoutes from "./routes/chatRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import feedbackRoutes from "./routes/feedbackRoutes.js";
 
-// ── Temporary ENV Debug Logs ───────────────────────────────────
-console.log("GMAIL_USER:", process.env.GMAIL_USER);
-console.log("OWNER_EMAIL:", process.env.OWNER_EMAIL);
-console.log("PORT:", process.env.PORT);
-console.log("MONGO_URI exists:", !!process.env.MONGO_URI);
-console.log("GMAIL_APP_PASS exists:", !!process.env.GMAIL_APP_PASS);
-console.log("OPENROUTER_API_KEY exists:", !!process.env.OPENROUTER_API_KEY);
-
 // ── DB ─────────────────────────────────────────────────────────
 connectDB();
 
