@@ -18,7 +18,7 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const API_URL = (import.meta.env.VITE_API_URL || "https://my-portfolio-ux9c.onrender.com") + "/api/chat";
+  const API_URL = (import.meta.env.VITE_API_URL || "https://my-portfolio-pgwb.onrender.com") + "/api/chat";
 
   const sendMessage = async () => {
     if (!userMessage.trim()) return;
