@@ -14,8 +14,10 @@ const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ Correct: VITE_API_URL must include https:// in your .env / Vercel env vars
-  const API_URL = `${import.meta.env.VITE_API_URL || "https://my-portfolio-pgwb.onrender.com"}/api/messages`;
+  // ✅ FIX: fallback now points to the real deployed backend, not localhost
+  const API_URL = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api/messages`
+    : "https://my-portfolio-pgwb.onrender.com/api/messages";
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,30 +26,14 @@ const ContactSection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(""); // ✅ Always clear previous error before a new attempt
-
-    // Basic client-side validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setError("Please fill in all required fields.");
-      setIsSubmitting(false);
-      return;
-    }
-
+    setError("");
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      // ✅ Guard: check content-type before parsing as JSON
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error(`Server returned unexpected response (status ${response.status})`);
-      }
-
       const data = await response.json();
-
       if (data.success) {
         setSubmitted(true);
         setFormData({ name: "", email: "", projectType: "", message: "" });
@@ -59,7 +45,6 @@ const ContactSection = () => {
       console.error("Submit error:", err);
       setError("Failed to send message. Please try again later.");
     }
-
     setIsSubmitting(false);
   };
 
@@ -78,8 +63,7 @@ const ContactSection = () => {
 
   const handleFocus = (e) => {
     e.target.style.borderColor = "rgba(212,175,55,0.55)";
-    e.target.style.boxShadow =
-      "0 0 0 3px rgba(212,175,55,0.06), 0 0 20px rgba(212,175,55,0.08)";
+    e.target.style.boxShadow = "0 0 0 3px rgba(212,175,55,0.06), 0 0 20px rgba(212,175,55,0.08)";
   };
   const handleBlur = (e) => {
     e.target.style.borderColor = "rgba(185,28,28,0.25)";
@@ -90,30 +74,20 @@ const ContactSection = () => {
     <section
       id="contact"
       className="relative py-28 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #080808 0%, #0e0505 50%, #080808 100%)",
-      }}
+      style={{ background: "linear-gradient(180deg, #080808 0%, #0e0505 50%, #080808 100%)" }}
     >
       {/* Ambient glows */}
       <div
         className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(185,28,28,0.07) 0%, transparent 65%)",
-          transform: "translateY(-30%)",
-        }}
+        style={{ background: "radial-gradient(circle, rgba(185,28,28,0.07) 0%, transparent 65%)", transform: "translateY(-30%)" }}
       />
       <div
         className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)",
-          transform: "translateY(30%)",
-        }}
+        style={{ background: "radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)", transform: "translateY(30%)" }}
       />
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
+
         {/* ── Section header ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -123,31 +97,20 @@ const ContactSection = () => {
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-4 mb-3">
-            <div
-              className="w-10 h-px"
-              style={{
-                background: "linear-gradient(90deg, transparent, #b91c1c)",
-              }}
-            />
+            <div className="w-10 h-px" style={{ background: "linear-gradient(90deg, transparent, #b91c1c)" }} />
             <span
               className="text-xs tracking-[0.35em] uppercase font-semibold"
               style={{ color: "#d4af37", fontFamily: "'Outfit', sans-serif" }}
             >
               Contact
             </span>
-            <div
-              className="w-10 h-px"
-              style={{
-                background: "linear-gradient(90deg, #b91c1c, transparent)",
-              }}
-            />
+            <div className="w-10 h-px" style={{ background: "linear-gradient(90deg, #b91c1c, transparent)" }} />
           </div>
           <h2
             className="text-5xl font-bold mb-4"
             style={{
               fontFamily: "'Sora', sans-serif",
-              background:
-                "linear-gradient(135deg, #ffffff 0%, #f0f0f0 40%, #d4af37 100%)",
+              background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 40%, #d4af37 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               lineHeight: 1.1,
@@ -161,24 +124,19 @@ const ContactSection = () => {
                 WebkitBackgroundClip: "text",
               }}
             >
-              {" "}
-              Together
+              {" "}Together
             </span>
           </h2>
           <p
             className="text-sm max-w-xl mx-auto"
-            style={{
-              color: "rgba(180,180,180,0.6)",
-              fontFamily: "'Outfit', sans-serif",
-              lineHeight: 1.7,
-            }}
+            style={{ color: "rgba(180,180,180,0.6)", fontFamily: "'Outfit', sans-serif", lineHeight: 1.7 }}
           >
-            Ready to build your next website or web application? Send your idea
-            and I'll get back to you.
+            Ready to build your next website or web application? Send your idea and I'll get back to you.
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
+
           {/* ── LEFT — Form panel ── */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -190,26 +148,17 @@ const ContactSection = () => {
               background: "rgba(255,255,255,0.02)",
               border: "1px solid rgba(185,28,28,0.2)",
               backdropFilter: "blur(12px)",
-              boxShadow:
-                "0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)",
+              boxShadow: "0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03)",
             }}
           >
             {/* Top shimmer */}
             <div
               className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)",
-              }}
+              style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)" }}
             />
 
             <div className="mb-6">
-              <div
-                className="w-8 h-0.5 mb-3 rounded-full"
-                style={{
-                  background: "linear-gradient(90deg, #d4af37, transparent)",
-                }}
-              />
+              <div className="w-8 h-0.5 mb-3 rounded-full" style={{ background: "linear-gradient(90deg, #d4af37, transparent)" }} />
               <h3
                 className="text-xl font-bold text-white"
                 style={{ fontFamily: "'Sora', sans-serif" }}
@@ -230,23 +179,14 @@ const ContactSection = () => {
                   borderLeft: "3px solid #22c55e",
                 }}
               >
-                <CheckCircle
-                  className="text-green-400 flex-shrink-0"
-                  size={18}
-                />
-                <span
-                  className="text-sm font-medium"
-                  style={{
-                    color: "#4ade80",
-                    fontFamily: "'Outfit', sans-serif",
-                  }}
-                >
+                <CheckCircle className="text-green-400 flex-shrink-0" size={18} />
+                <span className="text-sm font-medium" style={{ color: "#4ade80", fontFamily: "'Outfit', sans-serif" }}>
                   Message sent successfully!
                 </span>
               </motion.div>
             )}
 
-            {/* Error state */}
+            {/* ✅ NEW: Error state */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -258,13 +198,7 @@ const ContactSection = () => {
                   borderLeft: "3px solid #ef4444",
                 }}
               >
-                <span
-                  className="text-sm font-medium"
-                  style={{
-                    color: "#f87171",
-                    fontFamily: "'Outfit', sans-serif",
-                  }}
-                >
+                <span className="text-sm font-medium" style={{ color: "#f87171", fontFamily: "'Outfit', sans-serif" }}>
                   {error}
                 </span>
               </motion.div>
@@ -272,15 +206,8 @@ const ContactSection = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label
-                  className="block text-xs font-semibold mb-1.5"
-                  style={{
-                    color: "rgba(212,175,55,0.6)",
-                    fontFamily: "'Outfit', sans-serif",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Full Name <span style={{ color: "#ef4444" }}>*</span>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
+                  Full Name
                 </label>
                 <input
                   type="text"
@@ -290,21 +217,13 @@ const ContactSection = () => {
                   placeholder="Your name"
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  required
                   style={fieldBase}
                 />
               </div>
 
               <div>
-                <label
-                  className="block text-xs font-semibold mb-1.5"
-                  style={{
-                    color: "rgba(212,175,55,0.6)",
-                    fontFamily: "'Outfit', sans-serif",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Email Address <span style={{ color: "#ef4444" }}>*</span>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
+                  Email Address
                 </label>
                 <input
                   type="email"
@@ -314,20 +233,12 @@ const ContactSection = () => {
                   placeholder="you@example.com"
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  required
                   style={fieldBase}
                 />
               </div>
 
               <div>
-                <label
-                  className="block text-xs font-semibold mb-1.5"
-                  style={{
-                    color: "rgba(212,175,55,0.6)",
-                    fontFamily: "'Outfit', sans-serif",
-                    letterSpacing: "0.05em",
-                  }}
-                >
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
                   Project Type
                 </label>
                 <select
@@ -338,39 +249,20 @@ const ContactSection = () => {
                   onBlur={handleBlur}
                   style={{ ...fieldBase, cursor: "pointer" }}
                 >
-                  <option value="" style={{ background: "#0a0a0a" }}>
-                    Select a project type
-                  </option>
-                  <option style={{ background: "#0a0a0a" }}>
-                    Landing Page
-                  </option>
-                  <option style={{ background: "#0a0a0a" }}>
-                    Business Website
-                  </option>
-                  <option style={{ background: "#0a0a0a" }}>
-                    Full Stack Web App
-                  </option>
+                  <option value="" style={{ background: "#0a0a0a" }}>Select a project type</option>
+                  <option style={{ background: "#0a0a0a" }}>Landing Page</option>
+                  <option style={{ background: "#0a0a0a" }}>Business Website</option>
+                  <option style={{ background: "#0a0a0a" }}>Full Stack Web App</option>
                   <option style={{ background: "#0a0a0a" }}>REST API</option>
-                  <option style={{ background: "#0a0a0a" }}>
-                    Admin Dashboard
-                  </option>
-                  <option style={{ background: "#0a0a0a" }}>
-                    E-Commerce Store
-                  </option>
+                  <option style={{ background: "#0a0a0a" }}>Admin Dashboard</option>
+                  <option style={{ background: "#0a0a0a" }}>E-Commerce Store</option>
                   <option style={{ background: "#0a0a0a" }}>Other</option>
                 </select>
               </div>
 
               <div>
-                <label
-                  className="block text-xs font-semibold mb-1.5"
-                  style={{
-                    color: "rgba(212,175,55,0.6)",
-                    fontFamily: "'Outfit', sans-serif",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Message <span style={{ color: "#ef4444" }}>*</span>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
+                  Message
                 </label>
                 <textarea
                   name="message"
@@ -380,7 +272,6 @@ const ContactSection = () => {
                   placeholder="Tell me about your project..."
                   onFocus={handleFocus}
                   onBlur={handleBlur}
-                  required
                   style={{ ...fieldBase, resize: "none" }}
                 />
               </div>
@@ -397,21 +288,17 @@ const ContactSection = () => {
                   color: isSubmitting ? "rgba(255,255,255,0.4)" : "#fff",
                   cursor: isSubmitting ? "not-allowed" : "pointer",
                   fontFamily: "'Outfit', sans-serif",
-                  boxShadow: isSubmitting
-                    ? "none"
-                    : "0 4px 20px rgba(185,28,28,0.3)",
+                  boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(185,28,28,0.3)",
                   letterSpacing: "0.03em",
                 }}
                 onMouseEnter={(e) => {
                   if (!isSubmitting) {
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 30px rgba(185,28,28,0.5), 0 0 0 1px rgba(212,175,55,0.3)";
+                    e.currentTarget.style.boxShadow = "0 4px 30px rgba(185,28,28,0.5), 0 0 0 1px rgba(212,175,55,0.3)";
                     e.currentTarget.style.transform = "translateY(-1px)";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 20px rgba(185,28,28,0.3)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(185,28,28,0.3)";
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
@@ -436,29 +323,17 @@ const ContactSection = () => {
                 background: "rgba(255,255,255,0.02)",
                 border: "1px solid rgba(185,28,28,0.2)",
                 backdropFilter: "blur(12px)",
-                boxShadow:
-                  "0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03)",
               }}
             >
               <div
                 className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)",
-                }}
+                style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)" }}
               />
 
               <div className="mb-7">
-                <div
-                  className="w-8 h-0.5 mb-3 rounded-full"
-                  style={{
-                    background: "linear-gradient(90deg, #d4af37, transparent)",
-                  }}
-                />
-                <h3
-                  className="text-xl font-bold text-white"
-                  style={{ fontFamily: "'Sora', sans-serif" }}
-                >
+                <div className="w-8 h-0.5 mb-3 rounded-full" style={{ background: "linear-gradient(90deg, #d4af37, transparent)" }} />
+                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
                   Direct Contact
                 </h3>
               </div>
@@ -475,43 +350,23 @@ const ContactSection = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderLeftColor = "#d4af37";
                     e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 20px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor =
-                      "rgba(185,28,28,0.5)";
+                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
                     e.currentTarget.style.background = "rgba(185,28,28,0.04)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: "rgba(185,28,28,0.12)",
-                      border: "1px solid rgba(185,28,28,0.3)",
-                    }}
+                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
                   >
                     <Mail size={16} style={{ color: "#ef4444" }} />
                   </div>
                   <div>
-                    <p
-                      className="text-xs font-semibold mb-0.5"
-                      style={{
-                        color: "rgba(212,175,55,0.55)",
-                        fontFamily: "'Outfit', sans-serif",
-                        letterSpacing: "0.08em",
-                      }}
-                    >
-                      EMAIL
-                    </p>
-                    <span
-                      className="text-sm"
-                      style={{
-                        color: "rgba(220,220,220,0.85)",
-                        fontFamily: "'Outfit', sans-serif",
-                      }}
-                    >
+                    <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>EMAIL</p>
+                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>
                       Sarvathan9363@gmail.com
                     </span>
                   </div>
@@ -528,43 +383,23 @@ const ContactSection = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderLeftColor = "#d4af37";
                     e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 20px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor =
-                      "rgba(185,28,28,0.5)";
+                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
                     e.currentTarget.style.background = "rgba(185,28,28,0.04)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: "rgba(185,28,28,0.12)",
-                      border: "1px solid rgba(185,28,28,0.3)",
-                    }}
+                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
                   >
                     <MapPin size={16} style={{ color: "#ef4444" }} />
                   </div>
                   <div>
-                    <p
-                      className="text-xs font-semibold mb-0.5"
-                      style={{
-                        color: "rgba(212,175,55,0.55)",
-                        fontFamily: "'Outfit', sans-serif",
-                        letterSpacing: "0.08em",
-                      }}
-                    >
-                      LOCATION
-                    </p>
-                    <span
-                      className="text-sm"
-                      style={{
-                        color: "rgba(220,220,220,0.85)",
-                        fontFamily: "'Outfit', sans-serif",
-                      }}
-                    >
+                    <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>LOCATION</p>
+                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>
                       Tiruppur, Tamil Nadu, India
                     </span>
                   </div>
@@ -586,45 +421,25 @@ const ContactSection = () => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderLeftColor = "#d4af37";
                     e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow =
-                      "0 4px 20px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor =
-                      "rgba(185,28,28,0.5)";
+                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
                     e.currentTarget.style.background = "rgba(185,28,28,0.04)";
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   <div
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: "rgba(185,28,28,0.12)",
-                      border: "1px solid rgba(185,28,28,0.3)",
-                    }}
+                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
                   >
                     <svg className="w-4 h-4" fill="#ef4444" viewBox="0 0 24 24">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
                   </div>
                   <div>
-                    <p
-                      className="text-xs font-semibold mb-0.5"
-                      style={{
-                        color: "rgba(212,175,55,0.55)",
-                        fontFamily: "'Outfit', sans-serif",
-                        letterSpacing: "0.08em",
-                      }}
-                    >
-                      LINKEDIN
-                    </p>
-                    <span
-                      className="text-sm"
-                      style={{
-                        color: "rgba(212,175,55,0.8)",
-                        fontFamily: "'Outfit', sans-serif",
-                      }}
-                    >
+                    <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>LINKEDIN</p>
+                    <span className="text-sm" style={{ color: "rgba(212,175,55,0.8)", fontFamily: "'Outfit', sans-serif" }}>
                       View LinkedIn Profile →
                     </span>
                   </div>
@@ -648,13 +463,7 @@ const ContactSection = () => {
                     animation: "statusPulse 2s ease-in-out infinite",
                   }}
                 />
-                <p
-                  className="text-xs font-medium"
-                  style={{
-                    color: "rgba(74,222,128,0.75)",
-                    fontFamily: "'Outfit', sans-serif",
-                  }}
-                >
+                <p className="text-xs font-medium" style={{ color: "rgba(74,222,128,0.75)", fontFamily: "'Outfit', sans-serif" }}>
                   Available for freelance projects
                 </p>
               </div>
@@ -666,10 +475,7 @@ const ContactSection = () => {
       {/* Bottom divider */}
       <div
         className="absolute bottom-0 left-0 right-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.35) 30%, rgba(212,175,55,0.25) 50%, rgba(185,28,28,0.35) 70%, transparent 100%)",
-        }}
+        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.35) 30%, rgba(212,175,55,0.25) 50%, rgba(185,28,28,0.35) 70%, transparent 100%)" }}
       />
 
       <style>{`
@@ -683,4 +489,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection;
+export default ContactSection
