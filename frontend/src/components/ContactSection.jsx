@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Send, CheckCircle } from "lucide-react";
+import api from "../utils/api";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -14,11 +15,6 @@ const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ FIX: fallback now points to the real deployed backend, not localhost
-  const API_URL = import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api/messages`
-    : "https://my-portfolio-pgwb.onrender.com/api/messages";
-
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -27,24 +23,21 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
+
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (data.success) {
+      const response = await api.post("/messages", formData);
+      if (response.data.success) {
         setSubmitted(true);
         setFormData({ name: "", email: "", projectType: "", message: "" });
         setTimeout(() => setSubmitted(false), 4000);
       } else {
-        setError(data.message || "Something went wrong. Please try again.");
+        setError(response.data.message || "Something went wrong. Please try again.");
       }
     } catch (err) {
       console.error("Submit error:", err);
       setError("Failed to send message. Please try again later.");
     }
+
     setIsSubmitting(false);
   };
 
@@ -159,10 +152,7 @@ const ContactSection = () => {
 
             <div className="mb-6">
               <div className="w-8 h-0.5 mb-3 rounded-full" style={{ background: "linear-gradient(90deg, #d4af37, transparent)" }} />
-              <h3
-                className="text-xl font-bold text-white"
-                style={{ fontFamily: "'Sora', sans-serif" }}
-              >
+              <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
                 Send a Message
               </h3>
             </div>
@@ -186,7 +176,7 @@ const ContactSection = () => {
               </motion.div>
             )}
 
-            {/* ✅ NEW: Error state */}
+            {/* Error state */}
             {error && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -316,7 +306,6 @@ const ContactSection = () => {
             viewport={{ once: true }}
             className="flex flex-col gap-6"
           >
-            {/* Contact info card */}
             <div
               className="relative rounded-2xl p-8 flex-1"
               style={{
@@ -330,78 +319,41 @@ const ContactSection = () => {
                 className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
                 style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 40%, #d4af37 60%, transparent 100%)" }}
               />
-
               <div className="mb-7">
                 <div className="w-8 h-0.5 mb-3 rounded-full" style={{ background: "linear-gradient(90deg, #d4af37, transparent)" }} />
-                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
-                  Direct Contact
-                </h3>
+                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>Direct Contact</h3>
               </div>
 
               <div className="space-y-4">
                 {/* Email */}
                 <div
                   className="flex gap-4 items-center p-4 rounded-xl transition-all duration-300 cursor-default"
-                  style={{
-                    background: "rgba(185,28,28,0.04)",
-                    border: "1px solid rgba(185,28,28,0.18)",
-                    borderLeft: "3px solid rgba(185,28,28,0.5)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderLeftColor = "#d4af37";
-                    e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
-                    e.currentTarget.style.background = "rgba(185,28,28,0.04)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.18)", borderLeft: "3px solid rgba(185,28,28,0.5)" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderLeftColor = "#d4af37"; e.currentTarget.style.background = "rgba(212,175,55,0.03)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)"; e.currentTarget.style.background = "rgba(185,28,28,0.04)"; e.currentTarget.style.boxShadow = "none"; }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
-                  >
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}>
                     <Mail size={16} style={{ color: "#ef4444" }} />
                   </div>
                   <div>
                     <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>EMAIL</p>
-                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>
-                      Sarvathan9363@gmail.com
-                    </span>
+                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>Sarvathan9363@gmail.com</span>
                   </div>
                 </div>
 
                 {/* Location */}
                 <div
                   className="flex gap-4 items-center p-4 rounded-xl transition-all duration-300 cursor-default"
-                  style={{
-                    background: "rgba(185,28,28,0.04)",
-                    border: "1px solid rgba(185,28,28,0.18)",
-                    borderLeft: "3px solid rgba(185,28,28,0.5)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderLeftColor = "#d4af37";
-                    e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
-                    e.currentTarget.style.background = "rgba(185,28,28,0.04)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.18)", borderLeft: "3px solid rgba(185,28,28,0.5)" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderLeftColor = "#d4af37"; e.currentTarget.style.background = "rgba(212,175,55,0.03)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)"; e.currentTarget.style.background = "rgba(185,28,28,0.04)"; e.currentTarget.style.boxShadow = "none"; }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
-                  >
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}>
                     <MapPin size={16} style={{ color: "#ef4444" }} />
                   </div>
                   <div>
                     <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>LOCATION</p>
-                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>
-                      Tiruppur, Tamil Nadu, India
-                    </span>
+                    <span className="text-sm" style={{ color: "rgba(220,220,220,0.85)", fontFamily: "'Outfit', sans-serif" }}>Tiruppur, Tamil Nadu, India</span>
                   </div>
                 </div>
 
@@ -411,72 +363,33 @@ const ContactSection = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex gap-4 items-center p-4 rounded-xl transition-all duration-300"
-                  style={{
-                    background: "rgba(185,28,28,0.04)",
-                    border: "1px solid rgba(185,28,28,0.18)",
-                    borderLeft: "3px solid rgba(185,28,28,0.5)",
-                    textDecoration: "none",
-                    display: "flex",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderLeftColor = "#d4af37";
-                    e.currentTarget.style.background = "rgba(212,175,55,0.03)";
-                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)";
-                    e.currentTarget.style.background = "rgba(185,28,28,0.04)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.18)", borderLeft: "3px solid rgba(185,28,28,0.5)", textDecoration: "none", display: "flex" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderLeftColor = "#d4af37"; e.currentTarget.style.background = "rgba(212,175,55,0.03)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderLeftColor = "rgba(185,28,28,0.5)"; e.currentTarget.style.background = "rgba(185,28,28,0.04)"; e.currentTarget.style.boxShadow = "none"; }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}
-                  >
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(185,28,28,0.12)", border: "1px solid rgba(185,28,28,0.3)" }}>
                     <svg className="w-4 h-4" fill="#ef4444" viewBox="0 0 24 24">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
                   </div>
                   <div>
                     <p className="text-xs font-semibold mb-0.5" style={{ color: "rgba(212,175,55,0.55)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.08em" }}>LINKEDIN</p>
-                    <span className="text-sm" style={{ color: "rgba(212,175,55,0.8)", fontFamily: "'Outfit', sans-serif" }}>
-                      View LinkedIn Profile →
-                    </span>
+                    <span className="text-sm" style={{ color: "rgba(212,175,55,0.8)", fontFamily: "'Outfit', sans-serif" }}>View LinkedIn Profile →</span>
                   </div>
                 </a>
               </div>
 
               {/* Availability badge */}
-              <div
-                className="mt-6 p-4 flex items-center gap-3 rounded-xl"
-                style={{
-                  background: "rgba(34,197,94,0.04)",
-                  border: "1px solid rgba(34,197,94,0.15)",
-                  borderLeft: "3px solid rgba(34,197,94,0.45)",
-                }}
-              >
-                <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{
-                    background: "#22c55e",
-                    boxShadow: "0 0 8px rgba(34,197,94,0.8)",
-                    animation: "statusPulse 2s ease-in-out infinite",
-                  }}
-                />
-                <p className="text-xs font-medium" style={{ color: "rgba(74,222,128,0.75)", fontFamily: "'Outfit', sans-serif" }}>
-                  Available for freelance projects
-                </p>
+              <div className="mt-6 p-4 flex items-center gap-3 rounded-xl" style={{ background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)", borderLeft: "3px solid rgba(34,197,94,0.45)" }}>
+                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#22c55e", boxShadow: "0 0 8px rgba(34,197,94,0.8)", animation: "statusPulse 2s ease-in-out infinite" }} />
+                <p className="text-xs font-medium" style={{ color: "rgba(74,222,128,0.75)", fontFamily: "'Outfit', sans-serif" }}>Available for freelance projects</p>
               </div>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Bottom divider */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.35) 30%, rgba(212,175,55,0.25) 50%, rgba(185,28,28,0.35) 70%, transparent 100%)" }}
-      />
+      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.35) 30%, rgba(212,175,55,0.25) 50%, rgba(185,28,28,0.35) 70%, transparent 100%)" }} />
 
       <style>{`
         @keyframes statusPulse {
@@ -489,4 +402,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection
+export default ContactSection;

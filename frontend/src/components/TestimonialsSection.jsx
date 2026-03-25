@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import TestimonialCard from "./TestimonialCard";
+import api from "../utils/api";
 
 export default function TestimonialsSection() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -8,14 +9,9 @@ export default function TestimonialsSection() {
   const [submitted, setSubmitted] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api/feedback`
-    : "https://my-portfolio-pgwb.onrender.com/api/feedback";
-
   useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => { if (data.success) setFeedbacks(data.feedbacks); })
+    api.get("/feedback")
+      .then((res) => { if (res.data.success) setFeedbacks(res.data.feedbacks); })
       .catch((error) => console.error("Feedback fetch error:", error));
   }, []);
 
@@ -23,14 +19,9 @@ export default function TestimonialsSection() {
     e.preventDefault();
     if (!formData.name || !formData.role || !formData.message) return;
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setFeedbacks([data.feedback, ...feedbacks]);
+      const res = await api.post("/feedback", formData);
+      if (res.data.success) {
+        setFeedbacks([res.data.feedback, ...feedbacks]);
         setFormData({ name: "", role: "", email: "", message: "", rating: 5 });
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3500);
@@ -71,14 +62,8 @@ export default function TestimonialsSection() {
       style={{ background: "linear-gradient(180deg, #0e0505 0%, #080808 50%, #0e0505 100%)" }}
     >
       {/* Ambient glows */}
-      <div
-        className="absolute top-1/4 left-0 w-[400px] h-[400px] pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(185,28,28,0.07) 0%, transparent 65%)" }}
-      />
-      <div
-        className="absolute bottom-1/4 right-0 w-[350px] h-[350px] pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)" }}
-      />
+      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(185,28,28,0.07) 0%, transparent 65%)" }} />
+      <div className="absolute bottom-1/4 right-0 w-[350px] h-[350px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 65%)" }} />
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
 
@@ -92,21 +77,14 @@ export default function TestimonialsSection() {
         >
           <div className="flex items-center gap-4 mb-3">
             <div className="w-10 h-px" style={{ background: "linear-gradient(90deg, transparent, #b91c1c)" }} />
-            <span
-              className="text-xs tracking-[0.35em] uppercase font-semibold"
-              style={{ color: "#d4af37", fontFamily: "'Outfit', sans-serif" }}
-            >
+            <span className="text-xs tracking-[0.35em] uppercase font-semibold" style={{ color: "#d4af37", fontFamily: "'Outfit', sans-serif" }}>
               Feedback
             </span>
             <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(212,175,55,0.3) 0%, transparent 60%)" }} />
-            <span
-              className="text-xs font-medium"
-              style={{ color: "rgba(212,175,55,0.4)", fontFamily: "'Outfit', sans-serif" }}
-            >
+            <span className="text-xs font-medium" style={{ color: "rgba(212,175,55,0.4)", fontFamily: "'Outfit', sans-serif" }}>
               {feedbacks.length} reviews
             </span>
           </div>
-
           <h2
             className="text-5xl font-bold"
             style={{
@@ -118,13 +96,7 @@ export default function TestimonialsSection() {
             }}
           >
             Client
-            <span
-              style={{
-                background: "linear-gradient(90deg, #b91c1c, #ef4444)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <span style={{ background: "linear-gradient(90deg, #b91c1c, #ef4444)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               {" "}Feedback
             </span>
           </h2>
@@ -144,18 +116,11 @@ export default function TestimonialsSection() {
             boxShadow: "0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03)",
           }}
         >
-          {/* Top shimmer */}
-          <div
-            className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-            style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 35%, #d4af37 50%, #b91c1c 65%, transparent 100%)" }}
-          />
+          <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl" style={{ background: "linear-gradient(90deg, transparent 0%, #b91c1c 35%, #d4af37 50%, #b91c1c 65%, transparent 100%)" }} />
 
-          {/* Panel header */}
           <div className="mb-6">
             <div className="w-8 h-0.5 mb-3 rounded-full" style={{ background: "linear-gradient(90deg, #d4af37, transparent)" }} />
-            <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
-              Leave a Review
-            </h3>
+            <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>Leave a Review</h3>
           </div>
 
           {/* Success banner */}
@@ -164,14 +129,9 @@ export default function TestimonialsSection() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               className="mb-5 flex items-center gap-3 p-3.5 rounded-xl"
-              style={{
-                background: "rgba(34,197,94,0.06)",
-                border: "1px solid rgba(34,197,94,0.22)",
-                borderLeft: "3px solid rgba(34,197,94,0.55)",
-              }}
+              style={{ background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.22)", borderLeft: "3px solid rgba(34,197,94,0.55)" }}
             >
-              <span className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.8)" }} />
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.8)" }} />
               <span className="text-sm font-medium" style={{ color: "#4ade80", fontFamily: "'Outfit', sans-serif" }}>
                 Thank you for your feedback! Check your email for a confirmation.
               </span>
@@ -183,86 +143,33 @@ export default function TestimonialsSection() {
             {/* Name + Role */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5"
-                  style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Full name"
-                  value={formData.name}
-                  style={fieldBase}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>Your Name</label>
+                <input type="text" placeholder="Full name" value={formData.name} style={fieldBase} onFocus={handleFocus} onBlur={handleBlur} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5"
-                  style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
-                  Your Role
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Startup Founder"
-                  value={formData.role}
-                  style={fieldBase}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                />
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>Your Role</label>
+                <input type="text" placeholder="e.g. Startup Founder" value={formData.role} style={fieldBase} onFocus={handleFocus} onBlur={handleBlur} onChange={(e) => setFormData({ ...formData, role: e.target.value })} />
               </div>
             </div>
 
-            {/* Email — optional */}
+            {/* Email */}
             <div>
-              <label className="block text-xs font-semibold mb-1.5"
-                style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
                 Email Address
-                <span className="ml-1.5 font-normal" style={{ color: "rgba(180,180,180,0.4)" }}>
-                  (optional — receive a thank-you email)
-                </span>
+                <span className="ml-1.5 font-normal" style={{ color: "rgba(180,180,180,0.4)" }}>(optional — receive a thank-you email)</span>
               </label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                value={formData.email}
-                style={fieldBase}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
+              <input type="email" placeholder="you@example.com" value={formData.email} style={fieldBase} onFocus={handleFocus} onBlur={handleBlur} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
             </div>
 
             {/* Message */}
             <div>
-              <label className="block text-xs font-semibold mb-1.5"
-                style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>
-                Your Feedback
-              </label>
-              <textarea
-                placeholder="Share your experience working with Sarvathan..."
-                value={formData.message}
-                rows={4}
-                style={{ ...fieldBase, resize: "none" }}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              />
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "rgba(212,175,55,0.6)", fontFamily: "'Outfit', sans-serif", letterSpacing: "0.05em" }}>Your Feedback</label>
+              <textarea placeholder="Share your experience working with Sarvathan..." value={formData.message} rows={4} style={{ ...fieldBase, resize: "none" }} onFocus={handleFocus} onBlur={handleBlur} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
             </div>
 
             {/* Star rating */}
-            <div
-              className="flex items-center gap-4 px-4 py-3 rounded-xl"
-              style={{
-                background: "rgba(185,28,28,0.04)",
-                border: "1px solid rgba(185,28,28,0.18)",
-              }}
-            >
-              <span className="text-xs font-semibold flex-shrink-0"
-                style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(212,175,55,0.6)", letterSpacing: "0.05em" }}>
-                Rating
-              </span>
+            <div className="flex items-center gap-4 px-4 py-3 rounded-xl" style={{ background: "rgba(185,28,28,0.04)", border: "1px solid rgba(185,28,28,0.18)" }}>
+              <span className="text-xs font-semibold flex-shrink-0" style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(212,175,55,0.6)", letterSpacing: "0.05em" }}>Rating</span>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((star) => {
                   const filled = star <= displayRating;
@@ -282,24 +189,17 @@ export default function TestimonialsSection() {
                     >
                       <svg width="22" height="22" viewBox="0 0 24 24" style={{ display: "block" }}>
                         {filled ? (
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                            fill="#d4af37" stroke="#d4af37" strokeWidth="1" strokeLinejoin="round" />
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#d4af37" stroke="#d4af37" strokeWidth="1" strokeLinejoin="round" />
                         ) : (
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                            fill="none" stroke="rgba(185,28,28,0.35)" strokeWidth="1.5" strokeLinejoin="round" />
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="none" stroke="rgba(185,28,28,0.35)" strokeWidth="1.5" strokeLinejoin="round" />
                         )}
                       </svg>
                     </button>
                   );
                 })}
               </div>
-              <span className="text-sm font-bold tabular-nums"
-                style={{ fontFamily: "'Sora', sans-serif", color: "#d4af37" }}>
-                {displayRating}.0
-              </span>
-              <span className="text-xs" style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(180,180,180,0.3)" }}>
-                / 5.0
-              </span>
+              <span className="text-sm font-bold tabular-nums" style={{ fontFamily: "'Sora', sans-serif", color: "#d4af37" }}>{displayRating}.0</span>
+              <span className="text-xs" style={{ fontFamily: "'Outfit', sans-serif", color: "rgba(180,180,180,0.3)" }}>/ 5.0</span>
             </div>
 
             {/* Submit */}
@@ -315,14 +215,8 @@ export default function TestimonialsSection() {
                 cursor: "pointer",
                 letterSpacing: "0.03em",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 4px 28px rgba(185,28,28,0.55), 0 0 0 1px rgba(212,175,55,0.3)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 4px 18px rgba(185,28,28,0.3)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 28px rgba(185,28,28,0.55), 0 0 0 1px rgba(212,175,55,0.3)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 18px rgba(185,28,28,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
             >
               Submit Review
             </button>
@@ -339,22 +233,14 @@ export default function TestimonialsSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <TestimonialCard
-                quote={item.message}
-                name={item.name}
-                role={item.role}
-                rating={item.rating}
-              />
+              <TestimonialCard quote={item.message} name={item.name} role={item.role} rating={item.rating} />
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Section dividers */}
-      <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }} />
-      <div className="absolute bottom-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }} />
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(185,28,28,0.3) 30%, rgba(212,175,55,0.2) 50%, rgba(185,28,28,0.3) 70%, transparent 100%)" }} />
     </section>
   );
 }

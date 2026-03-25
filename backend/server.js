@@ -8,25 +8,37 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
-import errorHandler from "./middleware/errorMiddleware.js";
 import feedbackRoutes from "./routes/feedbackRoutes.js";
+import errorHandler from "./middleware/errorMiddleware.js";
 
-// ── DB ─────────────────────────────────────────────────────────
+// ── Connect Database ───────────────────────────────────────────
 connectDB();
 
 // ── App ────────────────────────────────────────────────────────
 const app = express();
 
-// ── CORS ───────────────────────────────────────────────────────
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://my-portfolio-eight-topaz-35.vercel.app"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+// ── Allowed Origins ────────────────────────────────────────────
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://my-portfolio-eight-topaz-35.vercel.app"
+];
 
+// ── CORS Configuration ─────────────────────────────────────────
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// ── Middleware ─────────────────────────────────────────────────
 app.use(express.json());
 
 // ── Routes ─────────────────────────────────────────────────────
@@ -34,13 +46,15 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
+// ── Root Route ────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.send("Portfolio Backend API is running...");
 });
 
+// ── Error Middleware ───────────────────────────────────────────
 app.use(errorHandler);
 
-// ── Server ─────────────────────────────────────────────────────
+// ── Server Start ───────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
