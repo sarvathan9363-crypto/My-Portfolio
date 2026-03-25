@@ -2,17 +2,27 @@ import nodemailer from "nodemailer";
 
 // ── Transporter ──────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",       // ✅ explicit host instead of service:"gmail"
+  port: 465,                    // ✅ SSL port (more reliable on cloud servers)
+  secure: true,                 // ✅ true for port 465
   auth: {
-    user: process.env.GMAIL_USER,       // sarvathan9363@gmail.com
-    pass: process.env.GMAIL_APP_PASS,   // Gmail App Password (not your login password)
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,  // ✅ prevents TLS issues on Render
   },
 });
 
 // ── Verify connection on startup ──────────────────────────────
-transporter.verify((error) => {
-  if (error) console.error("❌ Email transporter error:", error.message);
-  else console.log("✅ Email transporter ready");
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Email transporter error:", error.message);
+    console.error("   GMAIL_USER:", process.env.GMAIL_USER || "NOT SET");
+    console.error("   GMAIL_APP_PASS:", process.env.GMAIL_APP_PASS ? "SET ✅" : "NOT SET ❌");
+  } else {
+    console.log("✅ Email transporter ready — Gmail SMTP connected");
+  }
 });
 
 
@@ -73,9 +83,9 @@ const sendContactNotificationToOwner = async ({ name, email, projectType, messag
         </div>
       `,
     });
-    console.log("✅ Mail sent successfully: sendContactNotificationToOwner");
+    console.log("✅ Mail sent: sendContactNotificationToOwner");
   } catch (error) {
-    console.error("❌ Mail send error (sendContactNotificationToOwner):", error);
+    console.error("❌ Mail error (sendContactNotificationToOwner):", error.message);
   }
 };
 
@@ -128,9 +138,9 @@ const sendContactConfirmationToClient = async ({ name, email, projectType }) => 
         </div>
       `,
     });
-    console.log("✅ Mail sent successfully: sendContactConfirmationToClient");
+    console.log("✅ Mail sent: sendContactConfirmationToClient");
   } catch (error) {
-    console.error("❌ Mail send error (sendContactConfirmationToClient):", error);
+    console.error("❌ Mail error (sendContactConfirmationToClient):", error.message);
   }
 };
 
@@ -184,18 +194,18 @@ const sendFeedbackNotificationToOwner = async ({ name, role, message, rating }) 
         </div>
       `,
     });
-    console.log("✅ Mail sent successfully: sendFeedbackNotificationToOwner");
+    console.log("✅ Mail sent: sendFeedbackNotificationToOwner");
   } catch (error) {
-    console.error("❌ Mail send error (sendFeedbackNotificationToOwner):", error);
+    console.error("❌ Mail error (sendFeedbackNotificationToOwner):", error.message);
   }
 };
 
 /**
  * Send thank-you email to the person who submitted feedback
- * Note: feedback form has no email field — only send if email is provided
+ * Only sends if email is provided
  */
 const sendFeedbackThankYouToClient = async ({ name, email, rating }) => {
-  if (!email) return; // feedback form may not collect email
+  if (!email) return;
   const stars = "⭐".repeat(rating) + "☆".repeat(5 - rating);
   try {
     await transporter.sendMail({
@@ -229,9 +239,9 @@ const sendFeedbackThankYouToClient = async ({ name, email, rating }) => {
         </div>
       `,
     });
-    console.log("✅ Mail sent successfully: sendFeedbackThankYouToClient");
+    console.log("✅ Mail sent: sendFeedbackThankYouToClient");
   } catch (error) {
-    console.error("❌ Mail send error (sendFeedbackThankYouToClient):", error);
+    console.error("❌ Mail error (sendFeedbackThankYouToClient):", error.message);
   }
 };
 
