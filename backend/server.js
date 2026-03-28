@@ -66,9 +66,12 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 
   // ── Keep Render awake (ping every 14 minutes) ──────────────
-  // Render free tier sleeps after 15 min of inactivity.
-  // This self-ping prevents cold starts.
-  const RENDER_URL = "https://my-portfolio-pgwb.onrender.com";
+  const RENDER_URL = process.env.RENDER_URL;
+
+  if (!RENDER_URL) {
+    console.warn("[Keep-Alive] RENDER_URL not set in .env — skipping keep-alive ping.");
+    return;
+  }
 
   setInterval(async () => {
     try {
@@ -78,5 +81,5 @@ app.listen(PORT, () => {
     } catch (err) {
       console.log(`[Keep-Alive] Ping failed: ${err.message}`);
     }
-  }, 14 * 60 * 1000); // every 14 minutes
+  }, 14 * 60 * 1000);
 });
