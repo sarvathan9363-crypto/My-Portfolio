@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 // ── Lazy transporter factory (created per-send so env vars are always fresh)
 const createTransporter = () => {
   const user = process.env.GMAIL_EMAIL;
-  const pass = process.env.GMAIL_PASSWORD;
+  const pass = process.env.GMAIL_APP_PASS;
 
   if (!user || !pass) {
     throw new Error(
