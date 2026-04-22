@@ -5,7 +5,7 @@ import ResumePDF from "../assets/Resume.pdf";
 
 const AboutSection = () => {
   const stats = [
-    { icon: <Award className="w-5 h-5" />, label: "Projects Delivered", value: "8" },
+    { icon: <Award className="w-5 h-5" />, label: "Projects Delivered", value: "11" },
     { icon: <User className="w-5 h-5" />, label: "Experience", value: "2+ Years" },
     { icon: <MapPin className="w-5 h-5" />, label: "Location", value: "Tiruppur" },
     { icon: <Calendar className="w-5 h-5" />, label: "Availability", value: "Freelance Open" },

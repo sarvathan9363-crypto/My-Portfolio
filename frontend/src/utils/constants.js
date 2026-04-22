@@ -139,5 +139,28 @@ github: "https://github.com/sarvathan9363-crypto/My-Portfolio"
   ],
   github: "https://github.com/sarvathan9363-crypto/transparent-donation-tracking-system",
   linkedinPost: "https://www.linkedin.com/posts/sarvathan-c-923789315_web3-blockchain-hackathon-activity-7440087168997445633-R1tE?utm_source=social_share_send&utm_medium=android_app&rcm=ACoAAFAG7esBFOyY-tVg7xaxjwk7b1ItPEic_c0&utm_campaign=copy_link"
+},
+{
+  title: "Ocean Depths Interactive Storytelling Website",
+  description: "Immersive frontend storytelling website that explores ocean depth zones through scroll-based interactions, animated marine creatures, responsive UI, and interactive educational sections inspired by deep-sea exploration.",
+  tech: ["HTML", "CSS", "JavaScript", "Vercel"],
+  liveDemo: "https://ocean-depths-interactive-storytelli.vercel.app/",
+  github: "https://github.com/sarvathan9363-crypto/Ocean-depths-interactive-storytelling-website",
+  linkedinPost: "https://www.linkedin.com/posts/sarvathan-c-923789315_frontenddevelopment-webdesign-hackathon-ugcPost-7452568600575488000-e9sY/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFAG7esBFOyY-tVg7xaxjwk7b1ItPEic_c0"
+},
+{
+  title: "Amigo – Multilingual AI Chatbot for Indian Regional Languages",
+  description: "Secure multilingual AI chatbot built for academic assistance, supporting Indian regional languages through automatic language detection, Sarvam AI translation, FAISS-based retrieval, Groq LLM response generation, voice input/output, secure authentication, and chat history management.",
+  tech: ["FastAPI", "React", "FAISS", "MongoDB", "Sarvam AI", "Groq API"],
+  liveDemo: "https://lnkd.in/gMCVwRKa",
+  github: "https://github.com/sarvathan9363-crypto/multilingual-chatbot",
+  linkedinPost: "https://www.linkedin.com/posts/sarvathan-c-923789315_hackathon-ai-machinelearning-ugcPost-7448791594515726337-rElI"
+},
+{
+  title: "Malicious Prompt Detection for AI Safety",
+  description: "Machine learning classification project focused on detecting malicious and benign prompts to improve AI safety against prompt injection attacks. Built baseline TF-IDF models with Logistic Regression and LightGBM, then improved detection performance through DistilBERT fine-tuning for transformer-based prompt classification.",
+  tech: ["Python", "Scikit-learn", "LightGBM", "DistilBERT", "Pandas", "NumPy"],
+  github: "https://github.com/sarvathan9363-crypto/malicious-prompt-detection",
+  linkedinPost: "https://www.linkedin.com/posts/sarvathan-c-923789315_machinelearning-nlp-deeplearning-ugcPost-7448800333918568449-yGol"
 }
 ];
